@@ -14,15 +14,13 @@ jobs:
       - name: Download deploy status artifact
         uses: actions/download-artifact@v3
         with:
-          run-id: ${{ github.event.workflow_run.id }}
           name: deploy-status
-          path: deploy-status.txt
+          path: ./deploy-status.txt
       - name: Download release status artifact
         uses: actions/download-artifact@v3
         with:
-          run-id: ${{ github.event.workflow_run.id }}
           name: release-status
-          path: release-status.txt
+          path: ./release-status.txt
       - name: Check job statuses
         id: check_status
         run: |
