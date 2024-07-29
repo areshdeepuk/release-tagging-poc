@@ -40,3 +40,7 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
+      - name: Update manifest
+        run: echo "Update manifest DEV..."
+      - name: Deploy to Dev
+        run: echo "Deploy to Dev..."
