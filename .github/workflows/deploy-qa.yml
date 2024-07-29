@@ -28,10 +28,11 @@ jobs:
           else
             echo "No jobs were skipped"
           fi
-      - name: Deploy QA
+          
+      - name: Deployment step
         if: success()
-        steps: 
-          - name: Deployment step
-            run: echo "Deploying to qa..."
-          - name: Health check step
-            run: echo "Health check for QA..."
+        run: echo "Deploying to qa..."
+      - name: Deployment step
+        if: success()
+        run: echo "Health check for QA..."
+          
