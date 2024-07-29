@@ -13,6 +13,13 @@ jobs:
       run: echo "Update manifest DEV..."
     - name: Health check step
       run: echo "Health check for dev..."
+    - name: Save deploy status
+      run: echo "${{ job.status }}" > deploy-status.txt
+    - name: Upload deploy status
+      uses: actions/upload-artifact@v3
+      with:
+        name: deploy-status
+        path: deploy-status.txt
 
   Release_Manager:
     if: startsWith(github.event.head_commit.message, 'release') 
@@ -41,3 +48,10 @@ jobs:
     - name: Push the retagged Docker image
       run: |
         docker push ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
+    - name: Save release status
+      run: echo "${{ job.status }}" > release-status.txt
+    - name: Upload release status
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-status
+        path: release-status.txt

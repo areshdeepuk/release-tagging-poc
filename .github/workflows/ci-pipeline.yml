@@ -37,12 +37,3 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
-
-      - name: Set deploy status
-        run: echo "deploy_status=${{ job.status }}" >> $GITHUB_ENV
-  
-      - name: Save deploy status
-        uses: actions/upload-artifact@v3
-        with:
-          name: deploy-status
-          path: deploy-status.txt

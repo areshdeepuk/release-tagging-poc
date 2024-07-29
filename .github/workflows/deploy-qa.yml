@@ -22,7 +22,10 @@ jobs:
           deploy_status=$(cat deploy-status.txt)
           echo "Deploy status: $deploy_status"
 
-          if [[ "$deploy_status" == "skipped" ]]; then
+          release_status=$(cat release-status.txt)
+          echo "release status: $release_status"
+
+          if [[ "$deploy_status" == "skipped" || "$release_status" == "skipped"]]; then
             echo "Some jobs were skipped"
             exit 1
           else
