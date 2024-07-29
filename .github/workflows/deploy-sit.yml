@@ -1,0 +1,26 @@
+name: Deploy to SIT
+
+on:
+  workflow_run:
+    workflows: ["Deploy to QA"]
+    types:
+      - completed
+
+jobs:
+  Deploy_SIT:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deployment step
+      run: echo "Deploying to sit..."
+
+    - name: Health check step
+      run: echo "Health check for SIT..."
+  
+  Promote_SIT:
+    needs: Deploy_SIT
+    runs-on: ubuntu-latest
+    environment: sit
+    steps:
+    - name: Promote to Staging
+      run: echo "Promoting to STAGING..."
