@@ -16,7 +16,7 @@ jobs:
     - name: Save deploy status
       run: echo "${{ job.status }}" > deploy-status.txt
     - name: Upload deploy status
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: deploy-status
         path: deploy-status.txt
@@ -53,7 +53,7 @@ jobs:
       run: echo "${{ job.status }}" > release-status.txt
       
     - name: Upload release status
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: release-status
         path: release-status.txt
