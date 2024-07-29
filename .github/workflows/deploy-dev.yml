@@ -21,8 +21,8 @@ jobs:
         name: deploy-status
         path: deploy-status.txt
     - name: Pause for 3 seconds
-      run: sleep 3
-        
+      run: sleep 10
+
   Release_Manager:
     if: startsWith(github.event.head_commit.message, 'release') 
     needs: Deploy_Dev
@@ -60,4 +60,4 @@ jobs:
         name: release-status
         path: release-status.txt
     - name: Pause for 3 seconds
-      run: sleep 3
+      run: sleep 10
