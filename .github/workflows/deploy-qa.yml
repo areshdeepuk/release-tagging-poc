@@ -8,18 +8,19 @@ on:
 
 jobs:
   Deploy_QA:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Download deploy status artifact
         uses: actions/download-artifact@v3
         with:
           name: deploy-status
-          path: deploy-status
+          path: ./deploy-status
       - name: Download release status artifact
         uses: actions/download-artifact@v3
         with:
           name: release-status
-          path: release-status
+          path: ./release-status
       - name: Check job statuses
         id: check_status
         run: |
