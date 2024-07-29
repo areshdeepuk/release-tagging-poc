@@ -20,7 +20,9 @@ jobs:
       with:
         name: deploy-status
         path: deploy-status.txt
-
+    - name: Pause for 3 seconds
+      run: sleep 3
+        
   Release_Manager:
     if: startsWith(github.event.head_commit.message, 'release') 
     needs: Deploy_Dev
@@ -51,9 +53,11 @@ jobs:
 
     - name: Save release status
       run: echo "${{ job.status }}" > release-status.txt
-      
+
     - name: Upload release status
       uses: actions/upload-artifact@v3
       with:
         name: release-status
         path: release-status.txt
+    - name: Pause for 3 seconds
+      run: sleep 3
