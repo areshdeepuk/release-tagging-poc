@@ -48,8 +48,10 @@ jobs:
     - name: Push the retagged Docker image
       run: |
         docker push ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
+
     - name: Save release status
       run: echo "${{ job.status }}" > release-status.txt
+      
     - name: Upload release status
       uses: actions/upload-artifact@v3
       with:
