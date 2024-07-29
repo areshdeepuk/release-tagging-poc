@@ -41,13 +41,3 @@ jobs:
     - name: Push the retagged Docker image
       run: |
         docker push ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
-
-  Promote_QA:
-    needs: Release_Manager
-    runs-on: ubuntu-latest
-    environment: qa
-    steps:
-    - name: Update manifest
-      run: echo "Update manifest DEV..."
-    - name: Health check step
-      run: echo "Health check for dev..."

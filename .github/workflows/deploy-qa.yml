@@ -11,14 +11,27 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-    - name: Deployment step
-      run: echo "Deploying to qa..."
-    - name: Health check step
-      run: echo "Health check for QA..."
-  Promote_SIT:
-    needs: Deploy_QA
-    runs-on: ubuntu-latest
-    environment: qa
-    steps:
-    - name: Promote to SIT
-      run: echo "Promoting to SIT..."
+      - name: Download deploy status artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: deploy-status
+          path: deploy-status.txt
+      - name: Check job statuses
+        id: check_status
+        run: |
+          deploy_status=$(cat deploy-status.txt)
+          echo "Deploy status: $deploy_status"
+
+          if [[ "$deploy_status" == "skipped" ]]; then
+            echo "Some jobs were skipped"
+            exit 1
+          else
+            echo "No jobs were skipped"
+          fi
+      - name: Deploy QA
+        if: success()
+        steps: 
+          - name: Deployment step
+            run: echo "Deploying to qa..."
+          - name: Health check step
+            run: echo "Health check for QA..."
