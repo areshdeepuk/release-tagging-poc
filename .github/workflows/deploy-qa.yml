@@ -7,8 +7,8 @@ on:
       - completed
 
 jobs:
-  Deploy_QA:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.conclusion != 'skipped' }}
+  validate-status:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Download deploy status artifact
@@ -23,11 +23,20 @@ jobs:
         run: |
             ls -la release-status
       - name: Read release status
-        id: read_status
+        id: read-status
         run: |
-          cat release-status/release-status.txt
+          if grep -q "true" release-status/release-status.txt; then
+            echo "RELEASE_STATUS=true" >> $GITHUB_ENV
+          else
+            echo "RELEASE_STATUS=false" >> $GITHUB_ENV
+          fi
+  Deploy_QA:
+    needs: validate-status
+    runs-on: ubuntu-latest
+    if: env.RELEASE_STATUS == 'true'
+
+    steps:
       - name: Deployment step
         run: echo "Deploying to qa..."
       - name: Health check
         run: echo "Health check for QA..."
-          
