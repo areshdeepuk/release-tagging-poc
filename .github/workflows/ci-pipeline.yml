@@ -43,6 +43,7 @@ jobs:
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
       
   Deploy_Dev:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Update manifest
@@ -68,7 +69,7 @@ jobs:
         id: git_sha
         run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
         shell: bash
-          
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
