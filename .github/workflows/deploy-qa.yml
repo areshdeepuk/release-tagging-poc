@@ -2,7 +2,7 @@ name: Deploy to QA
 
 on:
   workflow_run:
-    workflows: ["Deploy to DEV"]
+    workflows: ["CI Pipeline"]
     types:
       - completed
 

@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -42,3 +41,57 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
+      
+  Deploy_Dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update manifest
+        run: echo "Update manifest DEV..."
+      - name: Health check step
+        run: echo "Health check for dev..."
+      - name: Save deploy status
+        run: echo "${{ job.status }}" > deploy-status.txt
+      - name: Upload deploy status
+        uses: actions/upload-artifact@v3
+        with:
+          name: deploy-status
+          path: deploy-status.txt
+  
+  Release_Manager:
+    if: startsWith(github.event.head_commit.message, 'release') 
+    needs: Deploy_Dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Get Short Git_SHA
+        id: git_sha
+        run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+        shell: bash
+          
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        
+      - name: Pull the existing Docker image
+        run: |
+          docker pull ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
+        
+      - name: Retag the Docker image
+        run: |
+          docker tag ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }} ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
+        
+      - name: Push the retagged Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
+        
+      - name: Save release status
+        run: echo "${{ job.status }}" > release-status.txt
+        
+      - name: Upload release status
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-status
+          path: release-status.txt
