@@ -1,9 +1,10 @@
 name: Deploy to DEV
 
 on:
-  push:
-    branches:
-      - main    
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed  
 
 jobs:
   Deploy_Dev:
@@ -19,7 +20,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: deploy-status
-        path: artifacts/deploy-status.txt
+        path: deploy-status.txt
 
   Release_Manager:
     if: startsWith(github.event.head_commit.message, 'release') 
@@ -58,4 +59,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: release-status
-        path: artifacts/release-status.txt
+        path: release-status.txt
