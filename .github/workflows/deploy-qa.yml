@@ -15,8 +15,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ github.run_id }}
-          name: deploy-status
-          path: ./artifact
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Read deploy status
         id: read_status_1
         run: |
