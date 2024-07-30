@@ -45,7 +45,7 @@ jobs:
 
     - name: Retag the Docker image
       run: |
-        docker tag ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
+        docker tag ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }} ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
 
     - name: Push the retagged Docker image
       run: |
