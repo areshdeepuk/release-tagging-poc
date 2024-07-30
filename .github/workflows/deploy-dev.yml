@@ -39,17 +39,17 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Pull the existing Docker image
-      run: |
-        docker pull ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
-
-    - name: Retag the Docker image
-      run: |
-        docker tag ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }} ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
-
-    - name: Push the retagged Docker image
-      run: |
-        docker push ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
+    #- name: Pull the existing Docker image
+    #  run: |
+    #    docker pull ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
+#
+    #- name: Retag the Docker image
+    #  run: |
+    #    docker tag ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }} ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
+#
+    #- name: Push the retagged Docker image
+    #  run: |
+    #    docker push ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
 
     - name: Save release status
       run: echo "${{ job.status }}" > release-status.txt
