@@ -8,7 +8,7 @@ on:
 
 jobs:
   Deploy_QA:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} && startsWith(github.event.head_commit.message, 'release')
+    if: startsWith(github.event.head_commit.message, 'release') && ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Deployment step
