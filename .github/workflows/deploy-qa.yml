@@ -22,21 +22,28 @@ jobs:
       - name: Check artifact directories
         run: |
             ls -la release-status
-      - name: Read release status
-        id: read-status
+      - name: Release status
+        id: read-set-status
         run: |
           if grep -q "true" release-status/release-status.txt; then
             echo "::set-output name=release_success::true"
+            echo "true" > release-status.txt
           else
           echo "::set-output name=release_success::false"
+          echo "false" > release-status.txt
           fi
+      - name: Upload release status
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-status
+          path: release-status.txt
   Deploy_QA:
     needs: validate-status
     runs-on: ubuntu-latest
     if: ${{ needs.validate-status.outputs.release_success == 'true' }}
-
     steps:
       - name: Deployment step
         run: echo "Deploying to qa..."
       - name: Health check
         run: echo "Health check for QA..."
+

@@ -2,25 +2,47 @@ name: Deploy to SIT
 
 on:
   workflow_run:
-    workflows: ["Deploy to QA1"]
+    workflows: ["Deploy to QA"]
     types:
       - completed
 
 jobs:
+  validate-status:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download deploy status artifact
+        run: |
+          echo "Downloading release status artifact..."
+          RELEASE_STATUS_URL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts" | \
+          jq -r '.artifacts[] | select(.name == "release-status") | .archive_download_url')
+          curl -sL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $RELEASE_STATUS_URL -o release-status.zip
+          unzip release-status.zip -d release-status
+      - name: Check artifact directories
+        run: |
+            ls -la release-status
+      - name: Release status
+        id: read-set-status
+        run: |
+          if grep -q "true" release-status/release-status.txt; then
+            echo "::set-output name=release_success::true"
+            echo "true" > release-status.txt
+          else
+          echo "::set-output name=release_success::false"
+          echo "false" > release-status.txt
+          fi
+      - name: Upload release status
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-status
+          path: release-status.txt
   Deploy_SIT:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} && startsWith(github.event.head_commit.message, 'release')
+    needs: validate-status
     runs-on: ubuntu-latest
+    if: ${{ needs.validate-status.outputs.release_success == 'true' }}
     steps:
-    - name: Deployment step
-      run: echo "Deploying to sit..."
-
-    - name: Health check step
-      run: echo "Health check for SIT..."
-  
-  Promote_SIT:
-    needs: Deploy_SIT
-    runs-on: ubuntu-latest
-    environment: sit
-    steps:
-    - name: Promote to Staging
-      run: echo "Promoting to STAGING..."
+      - name: Deployment step
+        run: echo "Deploying to qa..."
+      - name: Health check
+        run: echo "Health check for QA..."

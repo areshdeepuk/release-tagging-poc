@@ -50,6 +50,11 @@ jobs:
         run: echo "Update manifest DEV..."
       - name: Health check step
         run: echo "Health check for dev..."
+
+  Set_Release_Status:
+    needs: Deploy_Dev
+    runs-on: ubuntu-latest
+    steps:    
       - name: Set output if release
         id: set-output
         run: |
