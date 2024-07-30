@@ -8,7 +8,7 @@ on:
       - main    
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -43,7 +43,7 @@ jobs:
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}:dev_demoapp_${{ steps.git_sha.outputs.sha }}
       
   Deploy_Dev:
-    needs: build
+    needs: Build
     runs-on: ubuntu-latest
     steps:
       - name: Update manifest
@@ -57,6 +57,21 @@ jobs:
         with:
           name: deploy-status
           path: deploy-status.txt
+      - name: Set output if release
+        id: set-output
+        run: |
+          if [[ "${{ startsWith(github.event.head_commit.message, 'release') }}" == "true" ]]; then
+            echo "IS_RELEASE=true" >> $GITHUB_ENV
+            echo "success" > release-status.txt
+          else
+            echo "IS_RELEASE=false" >> $GITHUB_ENV
+            echo "fail" > release-status.txt
+          fi
+      - name: Upload release status
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-status
+          path: release-status.txt
   
   Release_Manager:
     if: startsWith(github.event.head_commit.message, 'release') 
@@ -87,12 +102,3 @@ jobs:
       - name: Push the retagged Docker image
         run: |
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}:qa_demoapp_${{ steps.git_sha.outputs.sha }}
-        
-      - name: Save release status
-        run: echo "${{ job.status }}" > release-status.txt
-        
-      - name: Upload release status
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-status
-          path: release-status.txt

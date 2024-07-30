@@ -11,29 +11,21 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.conclusion != 'skipped' }}
     runs-on: ubuntu-latest
     steps:
-      - name: List available artifacts
-        run: |
-          echo "Listing artifacts..."
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts" | jq '.artifacts[] | .name'   
       - name: Download deploy status artifact
-        uses: actions/download-artifact@v3
-        with: 
-          name: "deploy-status"
-          path: artifacts/deploy-status.txt
-        
-      - name: Display structure of downloaded files
         run: |
-          ls -R
-          ls ./
-      - name: Read deploy status
-        id: read_status_1
+          echo "Downloading release status artifact..."
+          RELEASE_STATUS_URL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts" | \
+          jq -r '.artifacts[] | select(.name == "release-status") | .archive_download_url')
+          curl -sL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $RELEASE_STATUS_URL -o release-status.zip
+          unzip release-status.zip -d release-status
+      - name: Check artifact directories
         run: |
-          cat artifacts/deploy-status.txt
+            ls -la release-status
       - name: Read release status
-        id: read_status_2
+        id: read_status
         run: |
-          cat ./artifact/release-status.txt
+          cat release-status.txt
       - name: Deployment step
         run: echo "Deploying to qa..."
       - name: Health check
