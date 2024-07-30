@@ -26,6 +26,8 @@ jobs:
     needs: Deploy_Dev
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
     - name: Get Short Git_SHA
       id: git_sha
       run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
