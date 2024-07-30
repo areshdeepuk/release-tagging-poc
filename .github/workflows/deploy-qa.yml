@@ -25,7 +25,7 @@ jobs:
       - name: Read release status
         id: read_status
         run: |
-          cat release-status.txt
+          cat release-status/release-status.txt
       - name: Deployment step
         run: echo "Deploying to qa..."
       - name: Health check

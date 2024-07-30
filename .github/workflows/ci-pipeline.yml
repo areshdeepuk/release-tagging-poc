@@ -50,13 +50,6 @@ jobs:
         run: echo "Update manifest DEV..."
       - name: Health check step
         run: echo "Health check for dev..."
-      - name: Save deploy status
-        run: echo "${{ job.status }}" > deploy-status.txt
-      - name: Upload deploy status
-        uses: actions/upload-artifact@v3
-        with:
-          name: deploy-status
-          path: deploy-status.txt
       - name: Set output if release
         id: set-output
         run: |
