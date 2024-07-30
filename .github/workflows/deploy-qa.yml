@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download deploy status artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: deploy-status
           path: ./artifact
@@ -21,7 +21,7 @@ jobs:
         run: |
           cat ./artifact/deploy-status.txt
       - name: Download release status artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: release-status
           path: ./artifact
