@@ -14,7 +14,9 @@ jobs:
       - name: Download deploy status artifact
         uses: actions/download-artifact@v3
       - name: Display structure of downloaded files
-        run: ls -R
+        run: |
+          ls -R
+          ls ./
       - name: Read deploy status
         id: read_status_1
         run: |
