@@ -20,7 +20,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: "deploy-status"
-          path: ./artifact
+          path: artifacts/deploy-status.txt
         
       - name: Display structure of downloaded files
         run: |
@@ -29,7 +29,7 @@ jobs:
       - name: Read deploy status
         id: read_status_1
         run: |
-          cat ./artifact/deploy-status.txt
+          cat artifacts/deploy-status.txt
       - name: Read release status
         id: read_status_2
         run: |
