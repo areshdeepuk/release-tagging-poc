@@ -14,8 +14,9 @@ jobs:
       - name: Download deploy status artifact
         uses: actions/download-artifact@v4
         with:
+
           name: deploy-status
-          path: deploy-status.txt
+          path: ./artifact
       - name: Read deploy status
         id: read_status_1
         run: |
