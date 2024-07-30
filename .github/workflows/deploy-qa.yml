@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Download deploy status artifact
         uses: actions/download-artifact@v3
+        with:
+          name: deploy-status
+          path: ./artifact
+        
       - name: Display structure of downloaded files
         run: |
           ls -R
