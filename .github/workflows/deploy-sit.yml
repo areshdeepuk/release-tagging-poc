@@ -2,7 +2,7 @@ name: Deploy to SIT
 
 on:
   workflow_run:
-    workflows: ["Deploy to QA"]
+    workflows: ["Deploy to QA1"]
     types:
       - completed
 
