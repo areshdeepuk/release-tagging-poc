@@ -11,6 +11,15 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Download release status artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: release-status
+          path: ./artifact
+      - name: Read release status
+        id: read_status
+        run: |
+          cat ./artifact/release-status.txt
       - name: Deployment step
         run: echo "Deploying to qa..."
       - name: Health check

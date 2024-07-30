@@ -19,7 +19,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: deploy-status
-        path: ./deploy-status.txt
+        path: deploy-status.txt
 
   Release_Manager:
     if: startsWith(github.event.head_commit.message, 'release') 
@@ -56,13 +56,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: release-status
-        path: ./release-status.txt
-
-  set-output:
-    runs-on: ubuntu-latest
-    needs: [Deploy_Dev, Release_Manager]
-    outputs:
-      release_manager_status: ${{ needs.Release_Manager.result }}
-    steps:
-      - name: Set output for Release_Manager status
-        run: echo "release_manager_status=${{ needs.Release_Manager.result }}" >> $GITHUB_ENV
+        path: release-status.txt
