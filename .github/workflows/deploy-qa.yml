@@ -10,8 +10,6 @@ jobs:
   validate-status:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    outputs:
-      release-status: ${{ steps.read-set-status.outputs.release_success }}
     steps:
       - name: Download deploy status artifact
         run: |
@@ -29,13 +27,10 @@ jobs:
         id: read-set-status
         run: |
           if grep -q true release-status/release-status.txt; then
-            echo "::set-output name=release_success::true"
+            echo "release_success=true" >> $GITHUB_ENV
           else
-            echo "::set-output name=release_success::false"
-          fi
-        #echo "release_success: $release_success"
-        #echo "true" > release-status.txt
-          
+            echo "release_success=false" >> $GITHUB_ENV
+          fi          
       - name: Upload release status
         uses: actions/upload-artifact@v3
         with:
@@ -44,7 +39,8 @@ jobs:
   Deploy_QA:
     needs: validate-status
     runs-on: ubuntu-latest
-    if: needs.validate-status.outputs.release-status == true
+    if: ${{ env.release_success == 'true' }}
+    
     steps:
       - name: Deployment step
         run: echo "Deploying to qa..."
