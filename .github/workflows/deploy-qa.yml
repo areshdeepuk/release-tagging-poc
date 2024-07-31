@@ -29,11 +29,12 @@ jobs:
         id: read-set-status
         run: |
           if grep -q true release-status/release-status.txt; then
-            echo "::set-output name=release_success::'true'"
+            echo "::set-output name=release_success::true"
             echo "release_success: $release_success"
             echo "true" > release-status.txt
           else
-            echo "::set-output name=release_success::'false'"
+            echo "::set-output name=release_success::false"
+            echo "release_success: $release_success"
             echo "false" > release-status.txt
           fi
       - name: Upload release status
@@ -44,7 +45,7 @@ jobs:
   Deploy_QA:
     needs: validate-status
     runs-on: ubuntu-latest
-    if: needs.validate-status.outputs.release-status == 'true'
+    if: needs.validate-status.outputs.release-status == true
     steps:
       - name: Deployment step
         run: echo "Deploying to qa..."
