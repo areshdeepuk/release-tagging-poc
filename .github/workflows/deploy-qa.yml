@@ -33,7 +33,9 @@ jobs:
           else
             echo "release_success=false" >> $GITHUB_ENV
           fi
-          echo "release_success: ${{ env.release_success }}"       
+      - name: Print release success status
+        run: echo "release_success: ${{ env.release_success }}"  
+           
       - name: Upload release status
         uses: actions/upload-artifact@v3
         with:
