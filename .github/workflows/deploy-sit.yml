@@ -48,7 +48,7 @@ jobs:
       - name: Health check
         run: echo "Health check for QA..."
   Promote:
-    needs: Deploy_QA
+    needs: Deploy_SIT
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
