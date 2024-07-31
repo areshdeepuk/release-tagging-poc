@@ -22,32 +22,33 @@ jobs:
       - name: Check artifact directories
         run: |
             ls -la release-status
+            cat release-status/release-status.txt
       - name: Release status
         id: read-set-status
         run: |
-          if grep -q "true" release-status/release-status.txt; then
+          if grep -q true release-status/release-status.txt; then
             echo "::set-output name=release_success::true"
-            echo "true" > release-status.txt
           else
-          echo "::set-output name=release_success::false"
-          echo "false" > release-status.txt
+            echo "::set-output name=release_success::false"
           fi
       - name: Upload release status
         uses: actions/upload-artifact@v3
         with:
           name: release-status
           path: release-status.txt
+    outputs:
+      release_success: ${{ steps.read-set-status.outputs.release_success }}
   Deploy_SIT:
     needs: validate-status
     runs-on: ubuntu-latest
-    if: ${{ needs.validate-status.outputs.release_success == 'true' }}
+    if : ${{ needs.validate-status.outputs.release_success }} == true
     steps:
       - name: Deployment step
         run: echo "Deploying to qa..."
       - name: Health check
         run: echo "Health check for QA..."
   Promote:
-    needs: Deploy_SIT
+    needs: Deploy_QA
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -56,7 +57,7 @@ jobs:
         id: git_sha
         run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
         shell: bash
-  
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -69,8 +70,8 @@ jobs:
         
       - name: Retag the Docker image
         run: |
-          docker tag ${{ secrets.DOCKER_REGISTRY_URL }}:sit_demoapp_${{ steps.git_sha.outputs.sha }} ${{ secrets.DOCKER_REGISTRY_URL }}:nfr_demoapp_${{ steps.git_sha.outputs.sha }}
+          docker tag ${{ secrets.DOCKER_REGISTRY_URL }}:sit_demoapp_${{ steps.git_sha.outputs.sha }} ${{ secrets.DOCKER_REGISTRY_URL }}:nft_demoapp_${{ steps.git_sha.outputs.sha }}
         
       - name: Push the retagged Docker image
         run: |
-          docker push ${{ secrets.DOCKER_REGISTRY_URL }}:nfr_demoapp_${{ steps.git_sha.outputs.sha }}
+          docker push ${{ secrets.DOCKER_REGISTRY_URL }}:nft_demoapp_${{ steps.git_sha.outputs.sha }}
