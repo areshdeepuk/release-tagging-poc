@@ -27,22 +27,17 @@ jobs:
         id: read-set-status
         run: |
           if grep -q true release-status/release-status.txt; then
-            echo "release_success=true" >> $GITHUB_ENV
+            echo "::set-output name=release_success::true"
           else
-            echo "release_success=false" >> $GITHUB_ENV
+            echo "::set-output name=release_success::false"
           fi
       - name: Upload release status
         uses: actions/upload-artifact@v3
         with:
           name: release-status
           path: release-status.txt
-      - name: Print release success status
-        run: echo "${{ env.release_success }}"
-      - name: Set job output
-        id: set-output
-        run: echo "release_success=${{ env.release_success }}" >> $GITHUB_ENV
     outputs:
-      release_success: ${{ steps.set-output.outputs.release_success }}
+      release_success: ${{ steps.read-set-status.outputs.release_success }}
   Deploy_QA:
     needs: validate-status
     runs-on: ubuntu-latest
