@@ -24,12 +24,13 @@ jobs:
       - name: Check artifact directories
         run: |
             ls -la release-status
+            cat release-status/release-status.txt
       - name: Release status
         id: read-set-status
         run: |
           if grep -q "true" release-status/release-status.txt; then
             echo "::set-output name=release_success::'true'"
-            echo "$release_success"
+            echo "release_success: $release_success"
             echo "true" > release-status.txt
           else
             echo "::set-output name=release_success::'false'"
