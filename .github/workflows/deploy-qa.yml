@@ -30,13 +30,12 @@ jobs:
         run: |
           if grep -q true release-status/release-status.txt; then
             echo "::set-output name=release_success::true"
-            echo "release_success: $release_success"
-            echo "true" > release-status.txt
           else
             echo "::set-output name=release_success::false"
-            echo "release_success: $release_success"
-            echo "false" > release-status.txt
           fi
+        #echo "release_success: $release_success"
+        #echo "true" > release-status.txt
+          
       - name: Upload release status
         uses: actions/upload-artifact@v3
         with:
