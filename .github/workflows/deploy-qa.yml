@@ -30,11 +30,10 @@ jobs:
         run: |
           if grep -q true release-status/release-status.txt; then
             echo "release_success=true" >> $GITHUB_ENV
-            echo "release_success: $env.release_success"
-            echo "release_success: $release_success"
           else
             echo "release_success=false" >> $GITHUB_ENV
-          fi          
+          fi
+          echo "release_success: ${{ env.release_success }}"       
       - name: Upload release status
         uses: actions/upload-artifact@v3
         with:

@@ -59,10 +59,8 @@ jobs:
         id: set-output
         run: |
           if [[ "${{ startsWith(github.event.head_commit.message, 'release') }}" == "true" ]]; then
-            echo "IS_RELEASE=true" >> $GITHUB_ENV
             echo "true" > release-status.txt
           else
-            echo "IS_RELEASE=false" >> $GITHUB_ENV
             echo "false" > release-status.txt
           fi
       - name: Upload release status
