@@ -33,14 +33,13 @@ jobs:
           else
             echo "release_success=false" >> $GITHUB_ENV
           fi
-      - name: Print release success status
-        run: echo "release_success: ${{ env.release_success }}"  
-           
       - name: Upload release status
         uses: actions/upload-artifact@v3
         with:
           name: release-status
           path: release-status.txt
+      - name: Print release success status
+        run: echo "${{ env.release_success }}"
   Deploy_QA:
     needs: validate-status
     runs-on: ubuntu-latest
