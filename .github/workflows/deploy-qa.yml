@@ -10,6 +10,8 @@ jobs:
   validate-status:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    outputs:
+      release-status: ${{ env.release_success }}
     steps:
       - name: Download deploy status artifact
         run: |
@@ -28,6 +30,8 @@ jobs:
         run: |
           if grep -q true release-status/release-status.txt; then
             echo "release_success=true" >> $GITHUB_ENV
+            echo "release_success: $env.release_success"
+            echo "release_success: $release_success"
           else
             echo "release_success=false" >> $GITHUB_ENV
           fi          
@@ -39,8 +43,7 @@ jobs:
   Deploy_QA:
     needs: validate-status
     runs-on: ubuntu-latest
-    if: ${{ env.release_success == 'true' }}
-    
+    if: needs.validate-status.outputs.release-status == true
     steps:
       - name: Deployment step
         run: echo "Deploying to qa..."
