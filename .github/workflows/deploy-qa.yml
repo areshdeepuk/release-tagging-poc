@@ -46,10 +46,9 @@ jobs:
   Deploy_QA:
     needs: validate-status
     runs-on: ubuntu-latest
-    if: ${{ needs.validate-status.outputs.release_success == true }}
     steps:
       - name: Deployment step
-        run: echo "Deploying to qa..."
+        run: echo "Deploying to qa... ${{ needs.validate-status.outputs.release_success }}"
       - name: Health check
         run: echo "Health check for QA..."
   Promote:
